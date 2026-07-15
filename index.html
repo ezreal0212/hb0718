@@ -1,37 +1,81 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-Hant">
 <head>
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0">
-
-    <title>Happy Birthday</title>
-
-    <link rel="stylesheet" href="./style.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#080808">
+  <title>Happy Birthday</title>
+  <link rel="stylesheet" href="./style.css">
 </head>
-
 <body>
-    <main class="hero">
-        <div class="hero-content">
-            <div class="heart">♥</div>
+  <div id="opening" class="opening" aria-label="生日網站開場">
+    <div class="opening-content">
+      <p class="kicker">For My Love</p>
+      <h1>2026</h1>
+      <button id="startButton" class="primary-button" type="button">開始播放</button>
+    </div>
+  </div>
 
-            <p class="eyebrow">FOR MY LOVE</p>
+  <header class="controls" aria-label="播放控制">
+    <button id="autoPlayButton" type="button" aria-pressed="false">電視模式：關</button>
+    <button id="musicButton" type="button" aria-pressed="false" hidden>音樂：關</button>
+  </header>
 
-            <h1>Happy Birthday</h1>
+  <main id="story">
+    <section id="hero" class="hero story-section" aria-labelledby="heroTitle">
+      <div class="hero-content reveal">
+        <p class="kicker">For My Love</p>
+        <h2 id="heroTitle">Happy Birthday</h2>
+        <p id="heroSubtitle" class="hero-subtitle"></p>
+      </div>
+      <span class="scroll-hint" aria-hidden="true">↓</span>
+    </section>
 
-            <p class="subtitle">
-                test
-            </p>
+    <section id="photos" class="light-section story-section" aria-labelledby="photosTitle">
+      <div class="section-heading reveal">
+        <p class="kicker dark">Our Moments</p>
+        <h2 id="photosTitle">一起收藏的時光</h2>
+      </div>
+      <div id="photoWall" class="photo-wall" aria-live="polite"></div>
+    </section>
 
-            <button id="startButton" type="button">
-                test
-            </button>
-        </div>
-    </main>
+    <section id="timelineSection" class="light-section story-section" aria-labelledby="timelineTitle">
+      <div class="section-heading reveal">
+        <p class="kicker dark">Our Story</p>
+        <h2 id="timelineTitle">故事，還在繼續</h2>
+      </div>
+      <div id="timeline" class="timeline"></div>
+    </section>
 
-    <script src="./config.js"></script>
-    <script src="./script.js"></script>
+    <section id="videoSection" class="video-section story-section" aria-labelledby="videoTitle" hidden>
+      <div class="section-heading reveal">
+        <p class="kicker">A Film For You</p>
+        <h2 id="videoTitle">把回憶再看一次</h2>
+      </div>
+      <video id="birthdayVideo" controls playsinline preload="metadata"></video>
+    </section>
+
+    <section id="letterSection" class="letter-section story-section" aria-labelledby="letterTitle">
+      <article class="letter-card">
+        <p class="kicker dark">A Letter For You</p>
+        <h2 id="letterTitle">想對妳說</h2>
+        <div id="letterContent" class="letter-content"></div>
+      </article>
+    </section>
+
+    <section id="ending" class="ending story-section" aria-labelledby="endingTitle">
+      <canvas id="fireworks" aria-hidden="true"></canvas>
+      <div class="ending-content reveal">
+        <p class="kicker">With All My Love</p>
+        <h2 id="endingTitle">生日快樂</h2>
+        <p id="endingMessage"></p>
+        <button id="replayButton" class="primary-button" type="button">Replay</button>
+      </div>
+    </section>
+  </main>
+
+  <noscript>請啟用 JavaScript 以觀看完整內容。</noscript>
+  <script src="./config.js"></script>
+  <script src="./script.js"></script>
 </body>
 </html>
