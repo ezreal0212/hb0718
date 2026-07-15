@@ -5,7 +5,6 @@
   const reducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const byId = (id) => document.getElementById(id);
   const state = { autoPlay: false, autoTimer: 0, manualPauseUntil: 0, musicWanted: false };
-  const youtubePlayers = new Map();
 
   function text(id, value) {
     const element = byId(id);
@@ -77,14 +76,15 @@
       const mediaWrap = document.createElement("div");
       mediaWrap.className = "timeline-media reveal";
       const media = item.media || {};
-      if (media.type === "youtube" && media.videoId) {
+      if (media.type === "google-drive" && media.fileId) {
         article.classList.add("has-video");
-        const frame = document.createElement("div");
-        frame.className = "youtube-frame";
-        const playerTarget = document.createElement("div");
-        playerTarget.className = "youtube-player";
-        playerTarget.dataset.videoId = media.videoId;
-        frame.appendChild(playerTarget);
+        const frame = document.createElement("iframe");
+        frame.className = "drive-frame";
+        frame.src = `https://drive.google.com/file/d/${encodeURIComponent(media.fileId)}/preview`;
+        frame.allow = "autoplay; fullscreen";
+        frame.allowFullscreen = true;
+        frame.title = `${item.date || "故事"}影片`;
+        frame.dataset.duration = String(Number(media.duration) || 425);
         mediaWrap.appendChild(frame);
       } else if (media.type === "video" && media.src) {
         article.classList.add("has-video");
@@ -185,40 +185,13 @@
   }
 
   const sections = () => Array.from(document.querySelectorAll(".story-section:not([hidden])"));
-  function playYouTube(section) {
-    const frame = section?.querySelector(".youtube-frame");
+  function waitForDriveVideo(section) {
+    const frame = section?.querySelector(".drive-frame");
     if (!frame) return false;
-    frame.dataset.wantPlay = "true";
-    const player = youtubePlayers.get(frame);
-    if (player?.playVideo) player.playVideo();
+    const duration = Math.max(1, Number(frame.dataset.duration) || 425);
+    window.clearTimeout(state.autoTimer);
+    state.autoTimer = window.setTimeout(advanceToNext, duration * 1000);
     return true;
-  }
-
-  const youtubeTargets = Array.from(document.querySelectorAll(".youtube-player"));
-  if (youtubeTargets.length) {
-    window.onYouTubeIframeAPIReady = () => {
-      youtubeTargets.forEach((target) => {
-        const frame = target.closest(".youtube-frame");
-        const videoId = target.dataset.videoId;
-        if (!frame || !videoId || videoId === "REPLACE_WITH_YOUTUBE_VIDEO_ID") return;
-        const player = new window.YT.Player(target, {
-          videoId,
-          playerVars: { autoplay: 0, controls: 1, mute: 1, playsinline: 1, rel: 0 },
-          events: {
-            onReady: () => {
-              youtubePlayers.set(frame, player);
-              if (frame.dataset.wantPlay === "true") player.playVideo();
-            },
-            onStateChange: (event) => {
-              if (event.data === window.YT.PlayerState.ENDED && state.autoPlay) advanceToNext();
-            }
-          }
-        });
-      });
-    };
-    const api = document.createElement("script");
-    api.src = "https://www.youtube.com/iframe_api";
-    document.head.appendChild(api);
   }
 
   function stopAutoPlay() {
@@ -233,9 +206,6 @@
     if (index < 0 || index >= all.length - 1) return stopAutoPlay();
     const next = all[index + 1];
     next.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" });
-    youtubePlayers.forEach((player, frame) => {
-      if (!next.contains(frame) && player?.pauseVideo) player.pauseVideo();
-    });
     document.querySelectorAll(".story-section video").forEach((clip) => {
       if (!next.contains(clip)) clip.pause();
     });
@@ -247,7 +217,7 @@
       safePlay(nextVideo);
       return;
     }
-    if (playYouTube(next)) return;
+    if (waitForDriveVideo(next)) return;
     scheduleNext();
   }
   function scheduleNext() {
@@ -262,7 +232,7 @@
       safePlay(currentVideo);
       return;
     }
-    if (playYouTube(current)) return;
+    if (waitForDriveVideo(current)) return;
     state.autoTimer = window.setTimeout(() => {
       if (Date.now() < state.manualPauseUntil) return scheduleNext();
       advanceToNext();
