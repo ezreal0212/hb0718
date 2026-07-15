@@ -7,17 +7,16 @@
   <title>Happy Birthday</title>
   <link rel="stylesheet" href="./style.css">
 </head>
-<body>
-  <div id="opening" class="opening" aria-label="生日網站開場">
-    <div class="opening-content">
+<body class="start-screen-open">
+  <div id="opening" class="opening start-screen" aria-label="生日網站開場">
+    <div class="opening-content start-content">
       <p class="kicker">For My Love</p>
       <h1>2026</h1>
       <button id="startButton" class="primary-button" type="button">開始播放</button>
     </div>
   </div>
 
-  <header class="controls" aria-label="播放控制">
-    <button id="autoPlayButton" type="button" aria-pressed="false">電視模式：關</button>
+  <header class="controls topbar" aria-label="播放控制">
     <button id="musicButton" type="button" aria-pressed="false" hidden>音樂：關</button>
   </header>
 
@@ -39,13 +38,7 @@
       <div id="photoWall" class="photo-wall" aria-live="polite"></div>
     </section>
 
-    <section id="timelineSection" class="light-section story-section" aria-labelledby="timelineTitle">
-      <div class="section-heading reveal">
-        <p class="kicker dark">Our Story</p>
-        <h2 id="timelineTitle">故事，還在繼續</h2>
-      </div>
-      <div id="timeline" class="timeline"></div>
-    </section>
+    <div id="timeline" class="timeline-pages" aria-label="我們的故事"></div>
 
     <section id="videoSection" class="video-section story-section" aria-labelledby="videoTitle" hidden>
       <div class="section-heading reveal">
@@ -69,8 +62,20 @@
         <p class="kicker">With All My Love</p>
         <h2 id="endingTitle">生日快樂</h2>
         <p id="endingMessage"></p>
-        <button id="replayButton" class="primary-button" type="button">Replay</button>
       </div>
+    </section>
+
+    <section id="giftSection" class="gift-section story-section" aria-labelledby="giftTitle">
+      <div class="gift-content reveal">
+        <p class="kicker">Your Birthday Gift</p>
+        <p class="gift-label">Surprise!</p>
+        <h2 id="giftTitle"></h2>
+        <p id="giftText" class="gift-text"></p>
+        <button id="replayButton" class="primary-button gift-replay" type="button">Replay</button>
+      </div>
+      <figure id="giftTicket" class="gift-ticket reveal">
+        <img id="giftImage" alt="">
+      </figure>
     </section>
   </main>
 

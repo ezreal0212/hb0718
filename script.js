@@ -21,6 +21,8 @@
 
   text("heroTitle", config.title || "Happy Birthday");
   text("heroSubtitle", config.subtitle || "");
+  text("giftTitle", config.gift?.title || "送妳一趟沖繩旅行");
+  text("giftText", config.gift?.text || "這次，我們一起出發。");
   text("endingMessage", config.ending || "願妳的每一天，都比昨天更幸福。");
   document.title = config.title || "Happy Birthday";
 
@@ -50,21 +52,70 @@
 
   const timeline = byId("timeline");
   if (timeline) {
-    (Array.isArray(config.timeline) ? config.timeline : []).forEach((item) => {
+    const timelineItems = Array.isArray(config.timeline) ? config.timeline : [];
+    timelineItems.forEach((item, index) => {
       if (!item) return;
-      const article = document.createElement("article");
-      article.className = "timeline-item reveal";
+      const article = document.createElement("section");
+      article.className = "timeline-page story-section";
+      article.setAttribute("aria-labelledby", `timelineTitle${index}`);
+      const content = document.createElement("article");
+      content.className = "timeline-page-content reveal";
+      const kicker = document.createElement("p");
+      kicker.className = "kicker dark";
+      kicker.textContent = "Our Story";
       const date = document.createElement("p");
       date.className = "timeline-date";
       date.textContent = item.date || "";
       const title = document.createElement("h3");
+      title.id = `timelineTitle${index}`;
       title.textContent = item.title || "";
       const body = document.createElement("p");
+      body.className = "timeline-text";
       body.textContent = item.text || "";
-      article.append(date, title, body);
+      content.append(kicker, date, title, body);
+      const mediaWrap = document.createElement("div");
+      mediaWrap.className = "timeline-media reveal";
+      const media = item.media || {};
+      if (media.type === "video" && media.src) {
+        article.classList.add("has-video");
+        const clip = document.createElement("video");
+        clip.src = media.src;
+        clip.controls = true;
+        clip.muted = true;
+        clip.playsInline = true;
+        clip.preload = "metadata";
+        if (media.poster) clip.poster = media.poster;
+        clip.addEventListener("error", () => mediaWrap.remove(), { once: true });
+        mediaWrap.appendChild(clip);
+      } else if (media.type === "images" && Array.isArray(media.images)) {
+        mediaWrap.classList.add("photo-collage");
+        media.images.forEach((photo, photoIndex) => {
+          if (!photo?.src) return;
+          const image = document.createElement("img");
+          image.src = photo.src;
+          image.alt = photo.alt || `${item.date || "故事"}照片 ${photoIndex + 1}`;
+          image.loading = "lazy";
+          image.decoding = "async";
+          image.addEventListener("error", () => {
+            image.remove();
+            if (!mediaWrap.children.length) mediaWrap.remove();
+          }, { once: true });
+          mediaWrap.appendChild(image);
+        });
+      } else if (media.type === "image" && media.src) {
+        const image = document.createElement("img");
+        image.src = media.src;
+        image.alt = media.alt || item.date || "故事照片";
+        image.loading = "lazy";
+        image.decoding = "async";
+        image.addEventListener("error", () => mediaWrap.remove(), { once: true });
+        mediaWrap.appendChild(image);
+      }
+      if (mediaWrap.children.length) article.append(content, mediaWrap);
+      else article.appendChild(content);
       timeline.appendChild(article);
     });
-    if (!timeline.children.length) timeline.closest("section")?.setAttribute("hidden", "");
+    if (!timeline.children.length) timeline.setAttribute("hidden", "");
   }
 
   const letterContent = byId("letterContent");
@@ -76,6 +127,16 @@
       p.textContent = paragraph;
       letterContent.appendChild(p);
     });
+  }
+
+  const giftSection = byId("giftSection");
+  const giftImage = byId("giftImage");
+  if (giftSection && giftImage && config.gift?.image) {
+    giftImage.src = config.gift.image;
+    giftImage.alt = config.gift.alt || "生日禮物";
+    giftImage.addEventListener("error", () => byId("giftTicket")?.remove(), { once: true });
+  } else {
+    byId("giftTicket")?.remove();
   }
 
   const videoSection = byId("videoSection");
@@ -114,42 +175,52 @@
   }
 
   const sections = () => Array.from(document.querySelectorAll(".story-section:not([hidden])"));
-  const autoButton = byId("autoPlayButton");
   function stopAutoPlay() {
     state.autoPlay = false;
     window.clearTimeout(state.autoTimer);
-    if (autoButton) {
-      autoButton.textContent = "電視模式：關";
-      autoButton.setAttribute("aria-pressed", "false");
+  }
+  function advanceToNext() {
+    if (!state.autoPlay) return;
+    const all = sections();
+    const current = all.reduce((best, item) => Math.abs(item.getBoundingClientRect().top) < Math.abs(best.getBoundingClientRect().top) ? item : best, all[0]);
+    const index = all.indexOf(current);
+    if (index < 0 || index >= all.length - 1) return stopAutoPlay();
+    const next = all[index + 1];
+    next.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" });
+    document.querySelectorAll(".story-section video").forEach((clip) => {
+      if (!next.contains(clip)) clip.pause();
+    });
+    const nextVideo = next.querySelector("video");
+    if (nextVideo) {
+      nextVideo.muted = true;
+      if (nextVideo.ended) nextVideo.currentTime = 0;
+      nextVideo.addEventListener("ended", advanceToNext, { once: true });
+      safePlay(nextVideo);
+      return;
     }
+    scheduleNext();
   }
   function scheduleNext() {
     window.clearTimeout(state.autoTimer);
     if (!state.autoPlay) return;
+    const all = sections();
+    const current = all.reduce((best, item) => Math.abs(item.getBoundingClientRect().top) < Math.abs(best.getBoundingClientRect().top) ? item : best, all[0]);
+    const currentVideo = current?.querySelector("video");
+    if (currentVideo && !currentVideo.ended) {
+      currentVideo.muted = true;
+      currentVideo.addEventListener("ended", advanceToNext, { once: true });
+      safePlay(currentVideo);
+      return;
+    }
     state.autoTimer = window.setTimeout(() => {
       if (Date.now() < state.manualPauseUntil) return scheduleNext();
-      const all = sections();
-      const current = all.reduce((best, item) => Math.abs(item.getBoundingClientRect().top) < Math.abs(best.getBoundingClientRect().top) ? item : best, all[0]);
-      const index = all.indexOf(current);
-      if (index < 0 || index >= all.length - 1) return stopAutoPlay();
-      const next = all[index + 1];
-      next.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" });
-      if (next === videoSection && video) {
-        video.muted = true;
-        safePlay(video);
-      }
-      scheduleNext();
-    }, 9000);
+      advanceToNext();
+    }, 5000);
   }
   function startAutoPlay() {
     state.autoPlay = true;
-    if (autoButton) {
-      autoButton.textContent = "電視模式：開";
-      autoButton.setAttribute("aria-pressed", "true");
-    }
     scheduleNext();
   }
-  autoButton?.addEventListener("click", () => state.autoPlay ? stopAutoPlay() : startAutoPlay());
   ["wheel", "touchstart", "pointerdown", "keydown"].forEach((eventName) => {
     window.addEventListener(eventName, (event) => {
       if (!state.autoPlay) return;
@@ -162,6 +233,8 @@
   const opening = byId("opening");
   byId("startButton")?.addEventListener("click", async () => {
     opening?.classList.add("is-closed");
+    document.body.classList.remove("start-screen-open");
+    startAutoPlay();
     window.setTimeout(() => opening?.remove(), 700);
     try { await document.documentElement.requestFullscreen?.(); } catch (_) { /* optional */ }
     if (audio) {
@@ -223,4 +296,5 @@
     window.addEventListener("resize", resize, { passive: true });
     draw();
   }
+
 })();
