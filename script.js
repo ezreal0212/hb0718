@@ -215,7 +215,7 @@
     state.autoTimer = window.setTimeout(() => {
       if (Date.now() < state.manualPauseUntil) return scheduleNext();
       advanceToNext();
-    }, 5000);
+    }, 10000);
   }
   function startAutoPlay() {
     state.autoPlay = true;
@@ -261,7 +261,10 @@
   });
 
   const observer = "IntersectionObserver" in window ? new IntersectionObserver((entries) => {
-    entries.forEach((entry) => entry.isIntersecting && entry.target.classList.add("is-visible"));
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) entry.target.classList.add("is-visible");
+      else if (entry.target.classList.contains("photo-collage")) entry.target.classList.remove("is-visible");
+    });
   }, { threshold: 0.14 }) : null;
   document.querySelectorAll(".reveal").forEach((element) => observer ? observer.observe(element) : element.classList.add("is-visible"));
 
