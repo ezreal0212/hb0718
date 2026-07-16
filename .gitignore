@@ -1,1 +1,4 @@
 assets/videos/*.mov
+assets/videos/*.mp4
+.r2-credentials.ps1
+.tools/

@@ -18,7 +18,7 @@ window.birthdayConfig = {
       { src: "./assets/images/together-03.jpg", alt: "相伴的回憶 3" },
       { src: "./assets/images/together-04.jpg", alt: "相伴的回憶 4" }
     ] } },
-    { date: "小標題3", title: "影片頁", text: "文字文字文字文字文字文字文字文字文字文字", media: { type: "google-drive", fileId: "1TdfRaaG-yCZ-qmvr82VL8-rXa_mqcaFP", duration: 425 } }
+    { date: "小標題3", title: "影片頁", text: "文字文字文字文字文字文字文字文字文字文字", media: { type: "video", src: "https://pub-a8dd4d11ffcb446c8f6085a86c8746a1.r2.dev/future.mp4" } }
   ],
   video: {
     enabled: false,
