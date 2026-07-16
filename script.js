@@ -316,6 +316,7 @@
 
   byId("replayButton")?.addEventListener("click", () => {
     stopAutoPlay();
+    state.manualPauseUntil = 0;
     document.querySelectorAll(".story-section video").forEach((clip) => {
       clip.pause();
       clip.currentTime = 0;
