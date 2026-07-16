@@ -91,7 +91,7 @@
         const clip = document.createElement("video");
         clip.src = media.src;
         clip.controls = true;
-        clip.muted = true;
+        clip.muted = media.muted === true;
         clip.playsInline = true;
         clip.preload = "metadata";
         if (media.poster) clip.poster = media.poster;
@@ -253,7 +253,6 @@
     });
     const nextVideo = next.querySelector("video");
     if (nextVideo) {
-      nextVideo.muted = true;
       if (nextVideo.ended) nextVideo.currentTime = 0;
       nextVideo.addEventListener("ended", advanceToNext, { once: true });
       safePlay(nextVideo);
@@ -269,7 +268,6 @@
     const current = all.reduce((best, item) => Math.abs(item.getBoundingClientRect().top) < Math.abs(best.getBoundingClientRect().top) ? item : best, all[0]);
     const currentVideo = current?.querySelector("video");
     if (currentVideo && !currentVideo.ended) {
-      currentVideo.muted = true;
       currentVideo.addEventListener("ended", advanceToNext, { once: true });
       safePlay(currentVideo);
       return;
