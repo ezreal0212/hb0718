@@ -273,7 +273,13 @@
       return;
     }
     if (playYouTube(current)) return;
-    const delay = current?.id === "letterSection" ? 20000 : current?.id === "giftSection" ? 10000 : 7000;
+    const delay = current?.id === "letterSection"
+      ? 20000
+      : current?.id === "giftSection"
+        ? 10000
+        : current === timeline?.children[1]
+          ? 9000
+          : 7000;
     state.autoTimer = window.setTimeout(() => {
       if (Date.now() < state.manualPauseUntil) return scheduleNext();
       advanceToNext();
@@ -310,8 +316,18 @@
 
   byId("replayButton")?.addEventListener("click", () => {
     stopAutoPlay();
-    video?.pause();
-    byId("hero")?.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth" });
+    document.querySelectorAll(".story-section video").forEach((clip) => {
+      clip.pause();
+      clip.currentTime = 0;
+    });
+    youtubePlayers.forEach((player, frame) => {
+      frame.dataset.wantPlay = "false";
+      if (player?.pauseVideo) player.pauseVideo();
+      if (player?.seekTo) player.seekTo(0, true);
+    });
+    document.querySelectorAll(".photo-collage").forEach((collage) => collage.classList.remove("is-visible"));
+    byId("hero")?.scrollIntoView({ behavior: "auto", block: "start" });
+    startAutoPlay();
   });
 
   document.addEventListener("visibilitychange", () => {
