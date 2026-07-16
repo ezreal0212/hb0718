@@ -93,7 +93,7 @@
         clip.controls = true;
         clip.muted = media.muted === true;
         clip.playsInline = true;
-        clip.preload = "metadata";
+        clip.preload = "auto";
         if (media.poster) clip.poster = media.poster;
         clip.addEventListener("error", () => mediaWrap.remove(), { once: true });
         mediaWrap.appendChild(clip);
@@ -293,6 +293,7 @@
     window.addEventListener(eventName, (event) => {
       if (!state.autoPlay) return;
       if (eventName === "pointerdown" && event.target?.closest(".controls")) return;
+      if ((eventName === "touchstart" || eventName === "pointerdown") && event.target?.closest("video, .youtube-frame")) return;
       state.manualPauseUntil = Date.now() + 12000;
       scheduleNext();
     }, { passive: true });
