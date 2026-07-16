@@ -62,6 +62,12 @@ body.start-screen-open .topbar { opacity: 0; visibility: hidden; pointer-events:
 .timeline-media.photo-collage img:nth-child(3) { z-index: 4; bottom: 1%; left: 8%; width: 48%; height: 49%; --photo-angle: 4deg; }
 .timeline-media.photo-collage img:nth-child(4) { z-index: 2; right: 5%; bottom: 0; width: 55%; height: 48%; --photo-angle: -5deg; }
 .timeline-media.photo-collage img:nth-child(5) { z-index: 5; top: 24%; left: 28%; width: 44%; height: 52%; --photo-angle: -2deg; }
+#timeline .timeline-page:first-child .photo-collage img:nth-child(4) { z-index: 6; }
+#timeline .timeline-page:first-child .photo-collage img:nth-child(1),
+#timeline .timeline-page:first-child .photo-collage img:nth-child(3),
+#timeline .timeline-page:first-child .photo-collage img:nth-child(4),
+#timeline .timeline-page:nth-child(2) .photo-collage img:nth-child(5) { object-fit: contain; background: #fff; }
+#timeline .timeline-page:nth-child(2) .photo-collage img:nth-child(5) { z-index: 7; }
 .timeline-media.photo-collage.is-visible img { animation: reveal-photo .75s cubic-bezier(.2,.8,.2,1) forwards; }
 .timeline-media.photo-collage.is-visible img:nth-child(2) { animation-delay: 1.35s; }
 .timeline-media.photo-collage.is-visible img:nth-child(3) { animation-delay: 2.7s; }
