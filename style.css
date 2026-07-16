@@ -61,24 +61,27 @@ body.start-screen-open .topbar { opacity: 0; visibility: hidden; pointer-events:
 .timeline-media.photo-collage img:nth-child(2) { z-index: 3; top: 7%; right: 0; width: 52%; height: 55%; --photo-angle: 5deg; }
 .timeline-media.photo-collage img:nth-child(3) { z-index: 4; bottom: 1%; left: 8%; width: 48%; height: 49%; --photo-angle: 4deg; }
 .timeline-media.photo-collage img:nth-child(4) { z-index: 2; right: 5%; bottom: 0; width: 55%; height: 48%; --photo-angle: -5deg; }
+.timeline-media.photo-collage img:nth-child(5) { z-index: 5; top: 24%; left: 28%; width: 44%; height: 52%; --photo-angle: -2deg; }
 .timeline-media.photo-collage.is-visible img { animation: reveal-photo .75s cubic-bezier(.2,.8,.2,1) forwards; }
 .timeline-media.photo-collage.is-visible img:nth-child(2) { animation-delay: 1.35s; }
 .timeline-media.photo-collage.is-visible img:nth-child(3) { animation-delay: 2.7s; }
 .timeline-media.photo-collage.is-visible img:nth-child(4) { animation-delay: 4.05s; }
+.timeline-media.photo-collage.is-visible img:nth-child(5) { animation-delay: 5.4s; }
 .timeline-media.photo-collage img:hover { z-index: 8; transform: rotate(0) scale(1.045); }
 @keyframes reveal-photo { from { opacity: 0; transform: translateY(35px) scale(.88) rotate(calc(var(--photo-angle) * 1.6)); } to { opacity: 1; transform: rotate(var(--photo-angle)); } }
 .video-section { display: grid; align-content: center; padding: clamp(80px, 10vw, 150px) max(22px, 7vw); background: #111; }
 .video-section video { display: block; width: min(1200px, 100%); max-height: 70vh; margin: 0 auto; background: #000; border-radius: 18px; }
-.letter-section { display: grid; place-items: center; padding: clamp(100px, 14vw, 200px) max(22px, 7vw); color: var(--ink); background: #fff; }
-.letter-card { width: min(820px, 100%); }
-.letter-content { margin-top: clamp(50px, 8vw, 90px); font: 400 clamp(1.1rem, 2vw, 1.45rem)/2 Georgia, "Microsoft JhengHei", serif; white-space: pre-line; }
-.letter-paragraph { margin: 0 0 1.65em; }
+.letter-section { display: grid; place-items: center; padding: clamp(64px, 7vw, 110px) max(22px, 4vw); color: var(--ink); background: #fff; }
+.letter-card { width: min(1280px, 100%); }
+.letter-card h2 { font-size: clamp(3rem, 5vw, 4.8rem); }
+.letter-content { margin-top: clamp(32px, 4vw, 52px); font: 400 clamp(1.1rem, 2vw, 1.45rem)/1.75 Georgia, "Microsoft JhengHei", serif; white-space: pre-line; }
+.letter-paragraph { margin: 0 0 1.3em; }
 .gift-section { display: grid; grid-template-columns: minmax(280px, .8fr) minmax(340px, 1.2fr); align-items: center; gap: clamp(40px, 8vw, 120px); padding: clamp(80px, 11vw, 150px) max(24px, 8vw); overflow: hidden; background: radial-gradient(circle at 75% 20%, #305d7599, transparent 38%), linear-gradient(135deg, #07131b, #0d2836 55%, #071016); }
 .gift-content { position: relative; z-index: 2; }
 .gift-label { margin: 0 0 12px; color: #8bd5f7; font: 600 clamp(1rem, 2vw, 1.35rem)/1 sans-serif; letter-spacing: .18em; text-transform: uppercase; }
 .gift-content h2 { max-width: 700px; margin: 0; font: 400 clamp(3.2rem, 7.5vw, 7rem)/1 Georgia, "Microsoft JhengHei", serif; letter-spacing: -.05em; }
 .gift-text { max-width: 600px; margin: 32px 0 0; color: #d8e7ed; font-size: clamp(1rem, 1.6vw, 1.25rem); line-height: 1.9; }
-.gift-replay { margin-top: 34px; }
+.ending-replay { margin-top: 8px; }
 .gift-ticket { position: relative; width: min(720px, 100%); margin: 0; padding: clamp(10px, 1.4vw, 18px); background: #fff; border-radius: 12px; box-shadow: 0 30px 90px #0009; transform: rotate(3deg); }
 .gift-ticket::before { content: "OKINAWA · 沖縄"; position: absolute; z-index: 2; right: 18px; bottom: -42px; color: #8bd5f7; font: 600 .8rem/1 sans-serif; letter-spacing: .25em; }
 .gift-ticket img { display: block; width: 100%; max-height: 62vh; border-radius: 5px; object-fit: contain; }
@@ -106,6 +109,8 @@ body.start-screen-open .topbar { opacity: 0; visibility: hidden; pointer-events:
   .timeline-page.has-video .timeline-media video, .timeline-page.has-video .youtube-frame { width: 100vw; height: auto; min-height: 0; max-height: 56.25vw; border-radius: 0; }
   .timeline-media.photo-collage { height: min(48vh, 430px); }
   .timeline-media.photo-collage img { max-height: none; }
+  .letter-section { padding-inline: 22px; }
+  .letter-card { width: 100%; }
   .gift-section { grid-template-columns: 1fr; align-content: center; gap: 36px; padding-inline: 28px; }
   .gift-ticket { width: min(88vw, 520px); margin-inline: auto; transform: rotate(2deg); }
   .gift-ticket img { max-height: 42vh; }

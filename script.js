@@ -273,10 +273,11 @@
       return;
     }
     if (playYouTube(current)) return;
+    const delay = current?.id === "letterSection" ? 20000 : current?.id === "giftSection" ? 10000 : 7000;
     state.autoTimer = window.setTimeout(() => {
       if (Date.now() < state.manualPauseUntil) return scheduleNext();
       advanceToNext();
-    }, 10000);
+    }, delay);
   }
   function startAutoPlay() {
     state.autoPlay = true;
